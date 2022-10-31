@@ -80,7 +80,7 @@ extension SitumLocationProvider:SITLocationDelegate {
                                             "speedAccuracy": 0,
                                             "speed": 1,
                                             "timestamp": location.timestamp,
-                                            "course": location.bearing.radians()]]
+                                            "course": location.bearing.degrees()]]
        
         NotificationCenter.default
                     .post(name: NSNotification.Name("com.woosmap.locationupdate"),

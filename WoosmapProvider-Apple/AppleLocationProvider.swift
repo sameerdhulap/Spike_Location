@@ -11,6 +11,7 @@ import CoreLocation
 public class AppleLocationProvider: NSObject {
     public static let shared = AppleLocationProvider()
     private var manager: CLLocationManager = CLLocationManager()
+    private var heading:Double = 0
     
     fileprivate func askPermission() {
         if let backgroundModes =  Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription") as? [String]{
@@ -30,6 +31,8 @@ public class AppleLocationProvider: NSObject {
     public func start(){
         // Step 3: initalise and configure CLLocationManager
         manager.delegate = self
+        manager.headingFilter = 3
+        //manager.headingOrientation
         askPermission()
         if UIDevice.current.batteryState == .unplugged {
             manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -41,6 +44,7 @@ public class AppleLocationProvider: NSObject {
     }
     public func stop(){
         manager.stopUpdatingLocation()
+        manager.stopUpdatingHeading()
     }
     public func reset(){
         stop()
@@ -61,17 +65,21 @@ extension AppleLocationProvider: CLLocationManagerDelegate {
             print("LocationManager didChangeAuthorization authorizedWhenInUse")
             // Stpe 6: Request a one-time location information
             self.manager.startUpdatingLocation()
+            self.manager.startUpdatingHeading()
         case .authorizedAlways: // Setting option: Always
             print("LocationManager didChangeAuthorization authorizedAlways")
             // Stpe 6: Request a one-time location information
             self.manager.startUpdatingLocation()
+            self.manager.startUpdatingHeading()
         case .restricted: // Restricted by parental control
             print("LocationManager didChangeAuthorization restricted")
         default:
             print("LocationManager didChangeAuthorization")
         }
     }
-    
+    public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        heading = newHeading.magneticHeading
+    }
     // Step 7: Handle the location information
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //print("LocationManager didUpdateLocations: numberOfLocation: \(locations.count)")
@@ -106,8 +114,7 @@ extension AppleLocationProvider: CLLocationManagerDelegate {
                                                 "speedAccuracy": location.speedAccuracy,
                                                 "speed": location.speed,
                                                 "timestamp": location.timestamp,
-                                                "course": location.course]]
-            
+                                                "course": heading]]
             NotificationCenter.default
                         .post(name: NSNotification.Name("com.woosmap.locationupdate"),
                          object: nil,
