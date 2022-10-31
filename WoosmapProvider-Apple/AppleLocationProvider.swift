@@ -107,6 +107,7 @@ extension AppleLocationProvider: CLLocationManagerDelegate {
                                                 "speed": location.speed,
                                                 "timestamp": location.timestamp,
                                                 "course": location.course]]
+            
             NotificationCenter.default
                         .post(name: NSNotification.Name("com.woosmap.locationupdate"),
                          object: nil,

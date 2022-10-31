@@ -14,23 +14,32 @@ class WoosLocation:CLLocation {
         self.indoorFloor = indoorFloor
         super.init()
     }
+    fileprivate static func toDouble(_ value:Any?) -> Double{
+        if let convert = value as? Double {
+            return convert
+        }
+        if let convert = value as? Float {
+            return Double(convert)
+        }
+        return 99
+    }
     init(location: [String:Any]) {
         self.indoorFloor = location["level"] as? String ?? "-99"
-        let latitude:Double = location["latitude"] as? Double ?? 0
-        let longitude:Double = location["longitude"] as? Double ?? 0
-        let altitude:Double = location["altitude"] as? Double ?? 0
-        let horizontalAccuracy:Double = location["horizontalAccuracy"] as? Double ?? 0
-        let verticalAccuracy:Double = location["verticalAccuracy"] as? Double ?? 0
-        let speedAccuracy:Double = location["speedAccuracy"] as? Double ?? 0
-        let speed:Double = location["speed"] as? Double ?? 0
-        let course:Double = location["course"] as? Double ?? 0
+        let latitude:Double = WoosLocation.toDouble(location["latitude"])
+        let longitude:Double = WoosLocation.toDouble(location["longitude"])
+        let altitude:Double = WoosLocation.toDouble(location["altitude"])
+        let horizontalAccuracy:Double = WoosLocation.toDouble(location["horizontalAccuracy"])
+        let verticalAccuracy:Double = WoosLocation.toDouble(location["verticalAccuracy"] )
+        let speedAccuracy:Double = WoosLocation.toDouble(location["speedAccuracy"])
+        let speed:Double = WoosLocation.toDouble(location["speed"])
+        let course:Double = WoosLocation.toDouble(location["course"])
 
         if #available(iOS 13.4, *) {
             super.init(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
                        altitude: altitude,
                        horizontalAccuracy: horizontalAccuracy,
                        verticalAccuracy: verticalAccuracy,
-                       course: course,
+                       course: CLLocationDirection(course),
                        courseAccuracy: -1,
                        speed: speed,
                        speedAccuracy: speedAccuracy,

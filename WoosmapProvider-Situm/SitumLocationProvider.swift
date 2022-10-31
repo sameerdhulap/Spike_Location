@@ -52,7 +52,7 @@ public class SitumLocationProvider: NSObject {
         request.useGps = true
         request.interval = 1000
         request.useLocationsCache = false
-        request.useBarometer = false
+        request.useBarometer = true
         request.useDeadReckoning = false
         //request.realtimeUpdateInterval = .updateIntervalRealtime
         
@@ -80,9 +80,8 @@ extension SitumLocationProvider:SITLocationDelegate {
                                             "speedAccuracy": 0,
                                             "speed": 1,
                                             "timestamp": location.timestamp,
-                                            "course": location.bearing]]
-        
-        
+                                            "course": location.bearing.radians()]]
+       
         NotificationCenter.default
                     .post(name: NSNotification.Name("com.woosmap.locationupdate"),
                      object: nil,
@@ -113,28 +112,4 @@ extension SitumLocationProvider: LocationCheckerProtocol {
         }
     }
 
-    // Step 7: Handle the location information
-    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        //print("LocationManager didUpdateLocations: numberOfLocation: \(locations.count)")
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        locations.forEach { (location) in
-            
-            let locatinResponse = ["userInfo": ["latitude": location.coordinate.latitude,
-                                                "longitude": location.coordinate.longitude,
-                                                "altitude": location.altitude,
-                                                "level": location.floor?.level ?? -99,
-                                                "horizontalAccuracy": location.horizontalAccuracy,
-                                                "verticalAccuracy": location.verticalAccuracy,
-                                                "speedAccuracy": location.speedAccuracy,
-                                                "speed": location.speed,
-                                                "timestamp": location.timestamp,
-                                                "course": location.course]]
-            NotificationCenter.default
-                        .post(name: NSNotification.Name("com.woosmap.locationupdate"),
-                         object: nil,
-                         userInfo: locatinResponse)
-        }
-    }
 }
