@@ -9,8 +9,11 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var lblFloor: UILabel!
+    @IBOutlet weak var lblLocation: UILabel!
     let woosmapLocationManager = WoosmapLocationManager()
     
+    @IBOutlet weak var lblInfo: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -20,8 +23,9 @@ class ViewController: UIViewController {
 }
 extension ViewController: WoosmapLocationDelegate{
     func WoosmapLocation(_ sender: WoosmapLocationManager, _ location: WoosLocation) {
-        print(location)
-        
+        lblLocation.text = "lat: \(location.coordinate.latitude ) \nlng:\(location.coordinate.longitude)"
+        lblFloor.text = "\(location.indoorFloor)"
+        lblInfo.text = location.description
     }
     
 }

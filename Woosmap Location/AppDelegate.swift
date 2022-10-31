@@ -6,8 +6,13 @@
 //
 
 import UIKit
-//import WoosmapProvider_Apple
+import WoosmapProvider_Apple
 import WoosmapProvider_Situm
+
+enum provider {
+    case Apple
+    case Situm
+}
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,13 +20,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         //Default Apple provider
-        //AppleLocationProvider.shared.start()
+        
+        let chooseProvider: provider = .Situm
+        switch chooseProvider {
+        case .Apple:
+            AppleLocationProvider.shared.start()
+        case .Situm:
+            SitumLocationProvider.shared.credential(["API_KEY":"331a35e0f73381c3a745a3609c724efabed4152ba3e8b25008d55e1fd053c642",
+                                                     "API_EMAIL":"vfunnell@webgeoservices.com"])
+            SitumLocationProvider.shared.bulildingInfo(["11567":["35153":3]])
+            SitumLocationProvider.shared.start()
+        }
+        
         
         //Situm
-        SitumLocationProvider.shared.credential(["API_KEY":"331a35e0f73381c3a745a3609c724efabed4152ba3e8b25008d55e1fd053c642",
-                                                 "API_EMAIL":"vfunnell@webgeoservices.com"])
-        SitumLocationProvider.shared.bulildingInfo(["11567":["35153":3]])
-        SitumLocationProvider.shared.start()
+
         return true
     }
 

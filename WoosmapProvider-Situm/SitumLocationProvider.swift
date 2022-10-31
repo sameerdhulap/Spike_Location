@@ -49,7 +49,7 @@ public class SitumLocationProvider: NSObject {
     fileprivate func situmRequest() {
         let request: SITLocationRequest = SITLocationRequest.init()
         request.useGlobalLocation = true
-        request.useGps = false
+        request.useGps = true
         request.interval = 1000
         request.useLocationsCache = false
         request.useBarometer = false
@@ -63,7 +63,7 @@ public class SitumLocationProvider: NSObject {
 extension SitumLocationProvider:SITLocationDelegate {
     
     public func locationManager(_ locationManager: SITLocationInterface, didUpdate location: SITLocation) {
-        var level = "0" //Ground
+        var level = "-99" //Ground
         if let buildingCapture = buildingInfo[location.position.buildingIdentifier]{
             if let indoorFloor = buildingCapture[location.position.floorIdentifier] {
                 level = "\(indoorFloor)"
@@ -78,9 +78,11 @@ extension SitumLocationProvider:SITLocationDelegate {
                                             "horizontalAccuracy": location.accuracy,
                                             "verticalAccuracy": -1,
                                             "speedAccuracy": 0,
-                                            "speed": 0,
+                                            "speed": 1,
                                             "timestamp": location.timestamp,
                                             "course": location.bearing]]
+        
+        
         NotificationCenter.default
                     .post(name: NSNotification.Name("com.woosmap.locationupdate"),
                      object: nil,
@@ -122,7 +124,7 @@ extension SitumLocationProvider: LocationCheckerProtocol {
             let locatinResponse = ["userInfo": ["latitude": location.coordinate.latitude,
                                                 "longitude": location.coordinate.longitude,
                                                 "altitude": location.altitude,
-                                                "level": location.floor?.level ?? 0,
+                                                "level": location.floor?.level ?? -99,
                                                 "horizontalAccuracy": location.horizontalAccuracy,
                                                 "verticalAccuracy": location.verticalAccuracy,
                                                 "speedAccuracy": location.speedAccuracy,
